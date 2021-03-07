@@ -1,11 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -25,10 +28,12 @@ namespace IdentityDemoNet3
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-
-
+            var connectionString = @"Server=(LocalDb)\MSSQLLocalDB;database=IdentityDemoNet3;trusted_connection=yes";
+            var migrationAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
+            services.AddDbContext<IdentityDbContext>(opt=> opt.UseSqlServer(connectionString, sql=> sql.MigrationsAssembly(migrationAssembly)));
             services.AddIdentityCore<IdentityUser>(options => { });
-            services.AddScoped<IUserStore<IdentityUser>, RepositorioPersonalizadoUsuario>();
+            services.AddScoped<IUserStore<IdentityUser>,
+                UserOnlyStore<IdentityUser,IdentityDbContext>>(); //Especifica que user El repositorio o capa de acceso a datos predefinido "UserOnlyStore"
 
             services.AddAuthentication("cookies")
                 .AddCookie("cookies", options => options.LoginPath = "/Home/IniciarSesion");
