@@ -27,8 +27,8 @@ namespace IdentityDemoNet3
             services.AddControllersWithViews();
 
 
-            services.AddIdentityCore<Usuario>(options => { });
-            services.AddScoped<IUserStore<Usuario>, UsuarioRepositorio>();
+            services.AddIdentityCore<IdentityUser>(options => { });
+            services.AddScoped<IUserStore<IdentityUser>, RepositorioPersonalizadoUsuario>();
 
             services.AddAuthentication("cookies")
                 .AddCookie("cookies", options => options.LoginPath = "/Home/IniciarSesion");
