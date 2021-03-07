@@ -16,9 +16,9 @@ namespace IdentityDemoNet3.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly UserManager<Usuario> _userManager;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public HomeController(ILogger<HomeController> logger, UserManager<Usuario> userManager)
+        public HomeController(ILogger<HomeController> logger, UserManager<IdentityUser> userManager)
         {
             _logger = logger;
             _userManager = userManager;
@@ -62,10 +62,10 @@ namespace IdentityDemoNet3.Controllers
                 if (user == null)
                 {
 
-                    user = new Usuario
+                    user = new IdentityUser
                     {
                         Id = Guid.NewGuid().ToString(),
-                        Descripcion = model.Descripcion
+                        UserName = model.Descripcion
                     };
 
                     var result = await _userManager.CreateAsync(user, model.Contraseña);
@@ -111,7 +111,7 @@ namespace IdentityDemoNet3.Controllers
                   
                     var identity = new ClaimsIdentity("cookies"); //This is the authority that issued this identity
                     identity.AddClaim(new Claim(ClaimTypes.NameIdentifier,user.Id));
-                    identity.AddClaim(new Claim(ClaimTypes.Name,user.Descripcion));
+                    identity.AddClaim(new Claim(ClaimTypes.Name,user.UserName));
 
                     //Create a ClaimsPrincipal that represents the user
                     await HttpContext.SignInAsync("cookies",new ClaimsPrincipal(identity));
