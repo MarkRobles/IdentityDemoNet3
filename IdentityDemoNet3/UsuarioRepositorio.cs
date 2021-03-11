@@ -33,9 +33,9 @@ namespace IdentityDemoNet3
                     new
                     {
                         id = user.Id,
-                        descripcion = user.Descripcion,
-                        descripcionNormalizada = user.DescripcionNormalizada,
-                        contraseñaHash = user.ContraseñaHash
+                        descripcion = user.UserName,
+                        descripcionNormalizada = user.NormalizedUserName,
+                        contraseñaHash = user.PasswordHash
                     }
                     );
             }
@@ -73,12 +73,12 @@ namespace IdentityDemoNet3
 
         public Task<string> GetNormalizedUserNameAsync(Usuario user, CancellationToken cancellationToken)
         {
-            return Task.FromResult(user.DescripcionNormalizada);
+            return Task.FromResult(user.NormalizedUserName);
         }
 
         public Task<string> GetPasswordHashAsync(Usuario user, CancellationToken cancellationToken)
         {
-            return Task.FromResult(user.ContraseñaHash);
+            return Task.FromResult(user.PasswordHash);
         }
 
         public Task<string> GetUserIdAsync(Usuario user, CancellationToken cancellationToken)
@@ -88,29 +88,29 @@ namespace IdentityDemoNet3
 
         public Task<string> GetUserNameAsync(Usuario user, CancellationToken cancellationToken)
         {
-            return Task.FromResult(user.Descripcion);
+            return Task.FromResult(user.UserName);
         }
 
         public Task<bool> HasPasswordAsync(Usuario user, CancellationToken cancellationToken)
         {
-            return Task.FromResult(user.ContraseñaHash != null);
+            return Task.FromResult(user.PasswordHash != null);
         }
 
         public Task SetNormalizedUserNameAsync(Usuario user, string normalizedName, CancellationToken cancellationToken)
         {
-            user.DescripcionNormalizada = normalizedName;
+            user.NormalizedUserName = normalizedName;
             return Task.CompletedTask;
         }
 
         public Task SetPasswordHashAsync(Usuario user, string passwordHash, CancellationToken cancellationToken)
         {
-            user.ContraseñaHash = passwordHash;
+            user.PasswordHash = passwordHash;
             return Task.CompletedTask;
         }
 
         public Task SetUserNameAsync(Usuario user, string userName, CancellationToken cancellationToken)
         {
-            user.Descripcion = user.Descripcion;
+            user.UserName = user.UserName;
             return Task.CompletedTask;
         }
 
@@ -127,9 +127,9 @@ namespace IdentityDemoNet3
                     new
                     {
                         id = user.Id,
-                        descripcion = user.Descripcion,
-                        descripcionNormalizada = user.DescripcionNormalizada,
-                        contraseñaHash = user.ContraseñaHash
+                        descripcion = user.UserName,
+                        descripcionNormalizada = user.NormalizedUserName,
+                        contraseñaHash = user.PasswordHash
                     }
                     );
             }

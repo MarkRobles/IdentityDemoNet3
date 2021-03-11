@@ -16,9 +16,9 @@ namespace IdentityDemoNet3.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<Usuario> _userManager;
 
-        public HomeController(ILogger<HomeController> logger, UserManager<IdentityUser> userManager)
+        public HomeController(ILogger<HomeController> logger, UserManager<Usuario> userManager)
         {
             _logger = logger;
             _userManager = userManager;
@@ -62,7 +62,7 @@ namespace IdentityDemoNet3.Controllers
                 if (user == null)
                 {
 
-                    user = new IdentityUser
+                    user = new Usuario
                     {
                         Id = Guid.NewGuid().ToString(),
                         UserName = model.Descripcion

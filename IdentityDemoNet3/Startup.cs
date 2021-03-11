@@ -28,12 +28,12 @@ namespace IdentityDemoNet3
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-            var connectionString = @"Server=(LocalDb)\MSSQLLocalDB;database=IdentityDemoNet3;trusted_connection=yes";
+            var connectionString = @"Server=(LocalDb)\MSSQLLocalDB;database=IdentityDemoNet3User;trusted_connection=yes";
             var migrationAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
-            services.AddDbContext<IdentityDbContext>(opt=> opt.UseSqlServer(connectionString, sql=> sql.MigrationsAssembly(migrationAssembly)));
-            services.AddIdentityCore<IdentityUser>(options => { });
-            services.AddScoped<IUserStore<IdentityUser>,
-                UserOnlyStore<IdentityUser,IdentityDbContext>>(); //Especifica que user El repositorio o capa de acceso a datos predefinido "UserOnlyStore"
+            services.AddDbContext<IdentityDemoUserDbContext>(opt=> opt.UseSqlServer(connectionString, sql=> sql.MigrationsAssembly(migrationAssembly)));
+            services.AddIdentityCore<Usuario>(options => { });
+            services.AddScoped<IUserStore<Usuario>,
+                UserOnlyStore<Usuario, IdentityDemoUserDbContext>>(); //Especifica que user El repositorio o capa de acceso a datos predefinido "UserOnlyStore"
 
             services.AddAuthentication("cookies")
                 .AddCookie("cookies", options => options.LoginPath = "/Home/IniciarSesion");
