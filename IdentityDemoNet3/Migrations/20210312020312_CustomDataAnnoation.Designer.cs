@@ -4,14 +4,16 @@ using IdentityDemoNet3;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace IdentityDemoNet3.Migrations
 {
     [DbContext(typeof(IdentityDemoUserDbContext))]
-    partial class IdentityDemoUserDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210312020312_CustomDataAnnoation")]
+    partial class CustomDataAnnoation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
