@@ -4,14 +4,16 @@ using IdentityDemoNet3;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace IdentityDemoNet3.Migrations
 {
     [DbContext(typeof(IdentityDemoUserDbContext))]
-    partial class IdentityDemoUserDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210312020312_CustomDataAnnoation")]
+    partial class CustomDataAnnoation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -27,7 +29,6 @@ namespace IdentityDemoNet3.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -47,7 +48,7 @@ namespace IdentityDemoNet3.Migrations
                         .HasColumnType("nvarchar(1000)")
                         .HasMaxLength(1000);
 
-                    b.Property<int>("GenreId")
+                    b.Property<int?>("GenreId")
                         .HasColumnType("int");
 
                     b.Property<bool>("Preorder")
@@ -66,8 +67,7 @@ namespace IdentityDemoNet3.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("GenreId")
-                        .IsUnique();
+                    b.HasIndex("GenreId");
 
                     b.ToTable("Movies");
                 });
@@ -294,10 +294,8 @@ namespace IdentityDemoNet3.Migrations
             modelBuilder.Entity("IdentityDemoNet3.Models.Movie", b =>
                 {
                     b.HasOne("IdentityDemoNet3.Models.Genre", "Genre")
-                        .WithOne("Movie")
-                        .HasForeignKey("IdentityDemoNet3.Models.Movie", "GenreId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany()
+                        .HasForeignKey("GenreId");
                 });
 
             modelBuilder.Entity("IdentityDemoNet3.Usuario", b =>

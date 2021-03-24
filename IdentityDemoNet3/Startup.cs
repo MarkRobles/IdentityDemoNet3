@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using IdentityDemoNet3.IRepositories;
+using IdentityDemoNet3.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -27,18 +29,27 @@ namespace IdentityDemoNet3
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews();
+
+            services.AddScoped<IMovieRepositorie, MovieRepositorie>();
+            services.AddScoped<IGenreRepositorie, GenreRepositorie>();
+
             var connectionString = @"Server=(LocalDb)\MSSQLLocalDB;database=IdentityDemoNet3User;trusted_connection=yes";
             var migrationAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
-            services.AddDbContext<IdentityDemoUserDbContext>(opt=> opt.UseSqlServer(connectionString, sql=> sql.MigrationsAssembly(migrationAssembly)));
+            services.AddDbContext<IdentityDemoUserDbContext>(opt => opt.UseSqlServer(connectionString, sql => sql.MigrationsAssembly(migrationAssembly)));
             services.AddIdentityCore<Usuario>(options => { });
             services.AddScoped<IUserStore<Usuario>,
                 UserOnlyStore<Usuario, IdentityDemoUserDbContext>>(); //Especifica que user El repositorio o capa de acceso a datos predefinido "UserOnlyStore"
 
             services.AddAuthentication("cookies")
-                .AddCookie("cookies", options => options.LoginPath = "/Home/IniciarSesion");
+                        .AddCookie("cookies", options => options.LoginPath = "/Home/IniciarSesion");
+            services.AddControllersWithViews();
+         
+          
+
+        
         }
 
+ 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
