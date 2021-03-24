@@ -1,5 +1,6 @@
 ﻿using IdentityDemoNet3.IRepositories;
 using IdentityDemoNet3.Models;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -53,6 +54,12 @@ namespace IdentityDemoNet3.Repositories
         public async Task<bool> Exists(int id)
         {
             return await _context.Genres.AnyAsync(e => e.Id == id);
+        }
+
+        public async Task<List<SelectListItem>> DropdownGenres()
+        {
+            var genres = await _context.Genres.ToListAsync();
+            return  genres.Select(c => new SelectListItem() { Text = c.Name, Value = c.Id.ToString() }).ToList();
         }
     }
 }

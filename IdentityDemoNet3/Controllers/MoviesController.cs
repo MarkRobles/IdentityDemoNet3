@@ -8,17 +8,20 @@ using Microsoft.EntityFrameworkCore;
 using IdentityDemoNet3;
 using IdentityDemoNet3.Models;
 using IdentityDemoNet3.IRepositories;
+using IdentityDemoNet3.ViewModels;
 
 namespace IdentityDemoNet3.Controllers
 {
     public class MoviesController : Controller
     {
         private readonly IMovieRepositorie _movieRepositorie;
+        private readonly IGenreRepositorie _genreRepositorie;
 
-        public MoviesController(IMovieRepositorie movieRepositorie)
+        public MoviesController(IMovieRepositorie movieRepositorie,IGenreRepositorie genreRepositorie)
         {
             
             _movieRepositorie = movieRepositorie;
+            _genreRepositorie = genreRepositorie;
         }
 
         // GET: Movies
@@ -45,9 +48,15 @@ namespace IdentityDemoNet3.Controllers
         }
 
         // GET: Movies/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View();
+
+            var viewmodel = new MoviesViewModel
+            {
+                Genres = await _genreRepositorie.DropdownGenres()
+            };
+        
+            return View(viewmodel);
         }
 
         // POST: Movies/Create
@@ -55,15 +64,26 @@ namespace IdentityDemoNet3.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,ReleaseDate,Description,Price,Preorder")] Movie movie)
+        public async Task<IActionResult> Create(MoviesViewModel viewModel)
         {
+        var genre =   await _genreRepositorie.GetById(viewModel.Movie.GenreId);
+            viewModel.Movie.Genre = genre;
+
             if (ModelState.IsValid)
             {
-               await _movieRepositorie.Create(movie);
+               await _movieRepositorie.Create(viewModel.Movie);
        
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index)); 
             }
-            return View(movie);
+
+            var viewmodel = new MoviesViewModel
+            {
+                Genres = await _genreRepositorie.DropdownGenres(),
+                Movie = viewModel.Movie
+            };
+
+
+            return View(viewModel);
         }
 
         // GET: Movies/Edit/5
@@ -79,7 +99,14 @@ namespace IdentityDemoNet3.Controllers
             {
                 return NotFound();
             }
-            return View(movie);
+
+            var viewmodel = new MoviesViewModel
+            {
+                Movie = movie,
+                Genres = await _genreRepositorie.DropdownGenres()
+            };
+
+            return View(viewmodel);
         }
 
         // POST: Movies/Edit/5
@@ -87,9 +114,9 @@ namespace IdentityDemoNet3.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,ReleaseDate,Description,Price,Preorder")] Movie movie)
+        public async Task<IActionResult> Edit(int id, MoviesViewModel viewModel)
         {
-            if (id != movie.Id)
+            if (id != viewModel.Movie.Id)
             {
                 return NotFound();
             }
@@ -98,13 +125,13 @@ namespace IdentityDemoNet3.Controllers
             {
                 try
                 {
-                  await  _movieRepositorie.Update(movie);
+                  await  _movieRepositorie.Update(viewModel.Movie);
                 
                 }
                 catch (DbUpdateConcurrencyException)
                 {
 
-                    var exist = await MovieExists(movie.Id);
+                    var exist = await MovieExists(viewModel.Movie.Id);
                     if (exist)
                     {
                         return NotFound();
@@ -116,7 +143,15 @@ namespace IdentityDemoNet3.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(movie);
+
+            var viewmodel = new MoviesViewModel
+            {
+                Movie = viewModel.Movie,
+                Genres = await _genreRepositorie.DropdownGenres()
+            };
+
+
+            return View(viewModel);
         }
 
         // GET: Movies/Delete/5

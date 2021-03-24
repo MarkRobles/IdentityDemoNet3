@@ -1,4 +1,5 @@
 ﻿using IdentityDemoNet3.Models;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,5 +15,6 @@ namespace IdentityDemoNet3.IRepositories
         Task<int> Delete(Genre Genre);
         Task<Genre> GetById(int? CategoriaId);
         Task<bool> Exists(int id);
+        Task<List<SelectListItem>> DropdownGenres();
     }
 }
