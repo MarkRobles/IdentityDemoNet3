@@ -36,9 +36,16 @@ namespace IdentityDemoNet3
             var connectionString = @"Server=(LocalDb)\MSSQLLocalDB;database=IdentityDemoNet3User;trusted_connection=yes";
             var migrationAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
             services.AddDbContext<IdentityDemoUserDbContext>(opt => opt.UseSqlServer(connectionString, sql => sql.MigrationsAssembly(migrationAssembly)));
-            services.AddIdentityCore<Usuario>(options => { });
+            services.AddIdentity<Usuario, IdentityRole>(options => { })
+                .AddDefaultTokenProviders();
+
+
             services.AddScoped<IUserStore<Usuario>,
                 UserOnlyStore<Usuario, IdentityDemoUserDbContext>>(); //Especifica que user El repositorio o capa de acceso a datos predefinido "UserOnlyStore"
+
+
+            services.Configure<DataProtectionTokenProviderOptions>(options =>
+            options.TokenLifespan = TimeSpan.FromHours(3));
 
             services.AddAuthentication("cookies")
                         .AddCookie("cookies", options => options.LoginPath = "/Home/IniciarSesion");
